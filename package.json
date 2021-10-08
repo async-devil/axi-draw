@@ -1,0 +1,12 @@
+{
+  "name": "axidraw",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/async-devil/axi-draw.git",
+  "author": "async-devil",
+  "license": "MIT",
+  "dependencies": {
+    "canvas-sketch": "^0.7.4",
+    "canvas-sketch-util": "^1.10.0"
+  }
+}
