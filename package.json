@@ -5,6 +5,9 @@
   "repository": "https://github.com/async-devil/axi-draw.git",
   "author": "async-devil",
   "license": "MIT",
+  "scripts": {
+    "start": "canvas-sketch 01.js --output=./output"
+  },
   "dependencies": {
     "canvas-sketch": "^0.7.4",
     "canvas-sketch-util": "^1.10.0"
