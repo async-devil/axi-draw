@@ -1,67 +1,62 @@
-const canvasSketch = require('canvas-sketch');
-const { renderPaths, createPath, pathsToPolylines } = require('canvas-sketch-util/penplot');
-const { clipPolylinesToBox } = require('canvas-sketch-util/geometry');
-const Random = require('canvas-sketch-util/random');
-
-// You can force a specific seed by replacing this with a string value
-const defaultSeed = '';
-
-// Set a random seed so we can reproduce this print later
-Random.setSeed(defaultSeed || Random.getRandomSeed());
-
-// Print to console so we can see which seed is being used and copy it if desired
-console.log('Random Seed:', Random.getSeed());
+const canvasSketch = require("canvas-sketch");
+const { clipPolylinesToBox } = require("canvas-sketch-util/geometry");
+const { renderPaths, pathsToPolylines } = require("canvas-sketch-util/penplot");
+const Random = require("canvas-sketch-util/random");
+const { rect } = require("./utils");
 
 const settings = {
-  suffix: Random.getSeed(),
-  dimensions: 'A4',
-  orientation: 'portrait',
+  dimensions: "A4",
+  orientation: "portrait",
   pixelsPerInch: 300,
   scaleToView: true,
-  units: 'mm'
+  units: "mm",
 };
 
-const sketch = (props) => {
-  const { width, height, units } = props;
+const defaultSeed = "";
 
-  // Holds all our 'path' objects
-  // which could be from createPath, or SVGPath string, or polylines
+Random.setSeed(defaultSeed || Random.getRandomSeed());
+console.log("Random Seed:", Random.getSeed());
+
+const sketch = ({ width, height, units }) => {
   const paths = [];
 
-  // Draw random arcs
-  const count = 450;
-  for (let i = 0; i < count; i++) {
-    // setup arc properties randomly
-    const angle = Random.gaussian(0, Math.PI / 2);
-    const arcLength = Math.abs(Random.gaussian(0, Math.PI / 2));
-    const r = ((i + 1) / count) * Math.min(width, height) / 1;
+  const gap = height / 60;
+  const rectWidth = (width - gap * 7) / 4;
+  const rectHeight = rectWidth;
 
-    // draw the arc
-    const p = createPath();
-    p.arc(width / 2, height / 2, r, angle, angle + arcLength);
-    paths.push(p);
+  const rows = 4;
+  const cols = 4;
+
+  for (let ix = 0; ix < rows; ix++) {
+    for (let iy = 0; iy < cols; iy++) {
+      const x = ix * (rectWidth + gap) + 10;
+      const y = iy * (rectHeight + gap) + 10;
+      rect(paths, x, y, rectWidth, rectHeight, 0);
+
+      const randomInnerRect = (margin) => {
+        if (Random.gaussian(2, 4) > 0) {
+          rect(
+            paths,
+            x + margin / 2,
+            y + margin / 2,
+            rectWidth - margin,
+            rectHeight - margin,
+            0
+          );
+        }
+
+        if (Random.gaussian(2, 4) > 0)
+          randomInnerRect(Math.min(margin + 6, rectHeight));
+      };
+
+      randomInnerRect(gap);
+    }
   }
+  const margin = 1.0;
+  const box = [margin, margin, width - margin, height - margin];
+  const lines = clipPolylinesToBox(pathsToPolylines(paths, { units }), box);
 
-  // Convert the paths into polylines so we can apply line-clipping
-  // When converting, pass the 'units' to get a nice default curve resolution
-  let lines = pathsToPolylines(paths, { units });
-
-  // Clip to bounds, using a margin in working units
-  const margin = 1; // in working 'units' based on settings
-  const box = [ margin, margin, width - margin, height - margin ];
-  lines = clipPolylinesToBox(lines, box);
-
-  // The 'penplot' util includes a utility to render
-  // and export both PNG and SVG files
-  return props => renderPaths(lines, {
-    ...props,
-    lineJoin: 'round',
-    lineCap: 'round',
-    // in working units; you might have a thicker pen
-    lineWidth: 0.3,
-    // Optimize SVG paths for pen plotter use
-    optimize: true
-  });
+  return (props) => renderPaths(lines, props);
 };
 
 canvasSketch(sketch, settings);
