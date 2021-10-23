@@ -6,7 +6,7 @@ const { createPath } = require("canvas-sketch-util/penplot");
  * @returns angle in radians
  */
 function degToRad(degrees) {
-  return (Math.PI / 180) * degrees
+  return (Math.PI / 180) * degrees;
 }
 
 /**
@@ -24,7 +24,7 @@ function rotate(cx, cy, x, y, angle) {
   const radians = degToRad(angle);
   const cos = Math.cos(radians);
   const sin = Math.sin(radians);
-  
+
   const nx = cos * (x - cx) - sin * (y - cy) + cx;
   const ny = cos * (y - cy) + sin * (x - cx) + cy;
 
@@ -34,10 +34,10 @@ function rotate(cx, cy, x, y, angle) {
 /**
  * Create rectangle, rotate if needed and push it to array
  * @param {Path[]} paths paths array
- * @param {number} x top left start x point 
- * @param {number} y top left start y point 
- * @param {number} width 
- * @param {number} height 
+ * @param {number} x top left start x point
+ * @param {number} y top left start y point
+ * @param {number} width
+ * @param {number} height
  * @param {number | undefined} angle angle in degrees
  */
 function rect(paths, x, y, width, height, angle) {
@@ -46,7 +46,7 @@ function rect(paths, x, y, width, height, angle) {
   const xy3 = rotate(x, y, x + width, y + height, angle); // Bottom left corner
   const xy4 = rotate(x, y, x, y + height, angle); // Bottom right corner
 
-  const path = createPath()
+  const path = createPath();
 
   path.moveTo(...xy1);
   path.lineTo(...xy2);
@@ -54,7 +54,39 @@ function rect(paths, x, y, width, height, angle) {
   path.lineTo(...xy4);
   path.lineTo(...xy1);
 
-  paths.push(path)
+  paths.push(path);
 }
 
-module.exports = {degToRad, rect, rotate}
+/**
+ * Create circle, change start and end angles and direction
+ * @param {Path[]} paths paths array
+ * @param {number} x circle center x point
+ * @param {number} y circle center y point
+ * @param {number} radius
+ * @param {number | undefined} startA start angle in degrees, started from right corner
+ * @default 0
+ * @param {number | undefined} endA end angle in degrees, started from right corner
+ * @default 360
+ * @param {boolean | undefined} reverse reverse angle direction from clockwise to anticlockwise
+ * @default false
+ */
+function arc(paths, x, y, radius, startA, endA, reverse) {
+  const start = degToRad(startA);
+  const end = degToRad(endA);
+
+  const path = createPath();
+
+  path.arc(
+    x,
+    y,
+    radius,
+    start || degToRad(0),
+    end || degToRad(360),
+    reverse || false
+  );
+  path.closePath();
+
+  paths.push(path);
+}
+
+module.exports = { degToRad, rect, arc, rotate };
