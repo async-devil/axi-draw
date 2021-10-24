@@ -12,12 +12,12 @@ const settings = {
   units: "mm",
 };
 
-const defaultSeed = "";
+const defaultSeed = "0tgsf27n3k";
 
 const random = new Random(defaultSeed || undefined);
 
 console.log("Random Seed:", random.seed);
-document.title = random.seed
+document.title = random.seed;
 
 const sketch = ({ width, height, units }) => {
   const paths = [];
@@ -25,26 +25,11 @@ const sketch = ({ width, height, units }) => {
   const centerX = width / 2;
   const centerY = height / 2;
 
-  const max = 50;
+  const max = 700;
 
   const radius = (i) => {
-    return (width / 2 ) - (width / 2 / max) * i;
+    return width / 2 - (width / 2 / max) * i;
   };
-
-  for (let i = 0; i < max; i++) {
-    const startA = random.randomGaussianArbitary(0, 360)
-    let endA = startA + (360 / max) * i 
-    endA = endA > 360 ? startA - (360 / max) * i : endA
-
-    arc(
-      paths,
-      centerX,
-      centerY,
-      radius(i),
-      random.randomGaussianArbitary(0, 360, 0.25),
-      random.randomGaussianArbitary(0, 360, 1)
-    );
-  }
 
   for (let i = 0; i < max; i++) {
     const startA = random.randomGaussianArbitary(0, 360);
@@ -56,7 +41,7 @@ const sketch = ({ width, height, units }) => {
       centerX,
       centerY,
       radius(i),
-      random.randomGaussianArbitary(0, 360, 0.25),
+      random.randomGaussianArbitary(0, 360, 3),
       random.randomGaussianArbitary(0, 360, 1)
     );
   }
