@@ -63,28 +63,17 @@ function rect(paths, x, y, width, height, angle) {
  * @param {number} x circle center x point
  * @param {number} y circle center y point
  * @param {number} radius
- * @param {number | undefined} startA start angle in degrees, started from right corner
- * @default 0
- * @param {number | undefined} endA end angle in degrees, started from right corner
- * @default 360
- * @param {boolean | undefined} reverse reverse angle direction from clockwise to anticlockwise
- * @default false
+ * @param {number | undefined} startA start angle in degrees, started from right corner @default 0
+ * @param {number | undefined} endA end angle in degrees, started from right corner @default 360
+ * @param {boolean | undefined} reverse reverse angle direction from clockwise to anticlockwise @default false
  */
 function arc(paths, x, y, radius, startA, endA, reverse) {
-  const start = degToRad(startA);
-  const end = degToRad(endA);
+  const start = degToRad(startA || 0);
+  const end = degToRad(endA || 360);
 
   const path = createPath();
 
-  path.arc(
-    x,
-    y,
-    radius,
-    start || degToRad(0),
-    end || degToRad(360),
-    reverse || false
-  );
-  path.closePath();
+  path.arc(x, y, radius, start, end, reverse || false);
 
   paths.push(path);
 }
