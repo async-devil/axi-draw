@@ -58,6 +58,33 @@ function rect(paths, x, y, width, height, angle) {
 }
 
 /**
+ * Create rectangle on circle line, rotate by circle if needed
+ * @param {Path[]} paths paths array
+ * @param {number} cx circle center x point
+ * @param {number} cy circle center y point
+ * @param {number} radius circle radius
+ * @param {number} width
+ * @param {number} height
+ * @param {number | undefined} angle angle in degrees
+ */
+function rectRotateByRadius(paths, cx, cy, radius, width, height, angle) {
+  const xy1 = rotate(cx, cy, cx + radius, cy, angle); // Top left corner
+  const xy2 = rotate(cx, cy, cx + radius + width, cy, angle); // Top right corner
+  const xy3 = rotate(cx, cy, cx + radius + width, cy + height, angle); // Bottom left corner
+  const xy4 = rotate(cx, cy, cx + radius, cy + height, angle); // Bottom right corner
+
+  const path = createPath();
+
+  path.moveTo(...xy1);
+  path.lineTo(...xy2);
+  path.lineTo(...xy3);
+  path.lineTo(...xy4);
+  path.lineTo(...xy1);
+
+  paths.push(path);
+}
+
+/**
  * Create circle, change start and end angles and direction
  * @param {Path[]} paths paths array
  * @param {number} x circle center x point
@@ -78,4 +105,4 @@ function arc(paths, x, y, radius, startA, endA, reverse) {
   paths.push(path);
 }
 
-module.exports = { degToRad, rect, arc, rotate };
+module.exports = { degToRad, rect, arc, rotate, rectRotateByRadius };
