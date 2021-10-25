@@ -75,8 +75,8 @@ class Random {
 
   /**
    * Get pseudo random float normal distributed between min and max exclusive and skew if needed
-   * @param {number} min exclusive min number
-   * @param {number} max exclisive max number
+   * @param {number} min exclusive min number @default 0
+   * @param {number} max exclisive max number @default 1
    * @param {number | undefined} skew skew parameter @default 1
    * @returns {number} normal distributed pseudo random number
    */
@@ -85,6 +85,8 @@ class Random {
     const v = this.randomFloat();
 
     skew = skew || 1;
+    min = min || 0;
+    max = max || 1;
 
     let num =
       Math.sqrt(-2.0 * Math.log(u || u + 0.2)) *
